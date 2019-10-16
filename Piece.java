@@ -5,15 +5,31 @@
 //import root.PieceType;
 //import root.PlayerType;
 
-public interface Piece {
+abstract class Piece {
 
     public PlayerType owner = PlayerType.NOT_SET;
 
     public PieceType type = PieceType.NOT_SET;
 
-    public boolean isValidMove(Move move, Board board);
+    abstract public boolean isValidMove(Move move, Board board);
 
-    public PlayerType getOwner();
+    public PlayerType getOwner() {
+        return owner;
+    }
 
-    public PieceType getType();
+    public PieceType getType() {
+        return type;
+    }
+
+    @Override
+    public String toString() {
+
+        StringBuilder sb = new StringBuilder();
+
+        sb.append(type+"(");
+        sb.append("owner = "+owner+"");
+        sb.append(")");
+
+        return sb.toString();
+    }
 }

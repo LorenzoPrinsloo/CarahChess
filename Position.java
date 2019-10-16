@@ -33,4 +33,12 @@ public class Position {
     public void incrementRow() {
         this.row++;
     }
+
+    @Override
+    public String toString() {
+        return "Position(" +
+                "column=" + column +
+                ", row=" + row +
+                ')';
+    }
 }

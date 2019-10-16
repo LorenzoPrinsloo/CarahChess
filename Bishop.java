@@ -4,13 +4,12 @@
 
 //import static Utils.isDiagonalMove;
 
-public class Bishop implements Piece {
+public class Bishop extends Piece {
 
-    PlayerType owner;
-    PieceType type = PieceType.BISHOP;
 
     public Bishop(PlayerType o) {
         this.owner = o;
+        type = PieceType.BISHOP;
     }
      Utils ut = new Utils();
     @Override
@@ -18,15 +17,5 @@ public class Bishop implements Piece {
         if(Utils.isDiagonalMove(move)){
             return Utils.isValidDiagonalMove(move, board, owner);
         } else { return false;}
-    }
-
-    @Override
-    public PlayerType getOwner() {
-        return this.owner;
-    }
-
-    @Override
-    public PieceType getType() {
-        return this.type;
     }
 }

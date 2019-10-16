@@ -7,12 +7,10 @@
 
 public class Dragon extends Bishop {
 
-    PlayerType owner;
-    PieceType type = PieceType.DRAGON;
-
     public Dragon(PlayerType o) {
         super(o);
         this.owner = o;
+        type = PieceType.DRAGON;
     }
 
     @Override
@@ -24,10 +22,5 @@ public class Dragon extends Bishop {
         } else {
             return super.isValidMove(move, board);
         }
-    }
-
-    @Override
-    public PlayerType getOwner() {
-        return this.owner;
     }
 }

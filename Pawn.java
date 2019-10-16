@@ -4,24 +4,28 @@
 
 import java.util.List;
 
-public class Pawn implements Piece {
+public class Pawn extends Piece {
 
     boolean isFirstMove;
-    PlayerType owner;
-
-    PieceType type = PieceType.PAWN;
 
     public Pawn(PlayerType o) {
         this.owner = o;
         this.isFirstMove = true;
+        this.type = PieceType.PAWN;
+    }
+
+    public Pawn(PlayerType o, boolean isFirstMove) {
+        this.owner = o;
+        this.isFirstMove = isFirstMove;
+        this.type = PieceType.PAWN;
     }
 
     @Override
     public boolean isValidMove(Move move, Board board) {
-    	
+
         int rowDiff = move.getTo().getRow() - move.getFrom().getRow();
         int colDiff = move.getTo().getColumn() - move.getFrom().getColumn();
-        
+
         if( (rowDiff < 0) && (owner == PlayerType.WHITE) ) {
             if(rowDiff == -1){ // move upwards
                 Piece dest = board.getBoardMatrix().get(move.getTo().getRow()).get(move.getTo().getColumn());
@@ -42,8 +46,8 @@ public class Pawn implements Piece {
                 } else return false;
             } else return false;
         } else if(rowDiff > 0 && owner == PlayerType.BLACK) {
-        	
-            
+
+
             if(rowDiff == 1){
                 Piece dest = board.getBoardMatrix().get(move.getTo().getRow()).get(move.getTo().getColumn());
 

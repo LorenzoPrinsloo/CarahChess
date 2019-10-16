@@ -18,13 +18,13 @@ public class ScannerInput {
 	public static String[] CastlingType = new String[2];
 	public static char[] charsUsed = new char[12];
 	public static char[] numbersPieces = new char[12];
-	public static int Errorlinecounter; 
+	public static int Errorlinecounter;
 	public static PieceType promotionP;
-	
-	
+
+
 	public static List<Move> readMoves(Scanner scanner) {
 
-        while (scanner.hasNext()) {
+        while (scanner.hasNextLine()) {
 
             String line = scanner.nextLine();
             if (line.startsWith("%")) {
@@ -32,7 +32,7 @@ public class ScannerInput {
                 continue;
             }
 
-         
+
          if( (line.lastIndexOf('0')==2) && (line.substring(0, 3).equals("0-0")) ){
         	 isKingSideCastling = true;
          }
@@ -64,78 +64,88 @@ public class ScannerInput {
 
             //String [] of positions (start) then (destination)
             positions = line.split(delimiter);
-                     
-            
+
+
             if( (isKingSideCastling == true) && (Board.currentPlayer == PlayerType.BLACK)){
             	fromRow = 0;
                 toRow = 0;
-                
+
                 fromRowRook = 0;
-                toRowRook = 0; 
-                
+                toRowRook = 0;
+
                 fromColRook = Utils.columnPosition('j');
                 toColRook = Utils.columnPosition('h');
-                
+
                 fromAlphaCharacter = 'f';
                 toAlphaCharacter = 'i';
-                
+
                 fromColumn = Utils.columnPosition(fromAlphaCharacter);
                 toColumn = Utils.columnPosition(toAlphaCharacter);
-                
+
             } else if((isKingSideCastling == true) && (Board.currentPlayer == PlayerType.WHITE)){
             	fromRow = 9;
                 toRow = 9;
-                
+
                 fromRowRook = 9;
-                toRowRook = 9; 
-                
+                toRowRook = 9;
+
                 fromColRook = Utils.columnPosition('j');
                 toColRook = Utils.columnPosition('h');
-                        
+
                 fromAlphaCharacter = 'f';
                 toAlphaCharacter = 'i';
-                        
+
                 fromColumn = Utils.columnPosition(fromAlphaCharacter);
                 toColumn = Utils.columnPosition(toAlphaCharacter);
-                
+
             } else if( ((isQueenSideCastling == true) && (Board.currentPlayer == PlayerType.BLACK)) ){
             	fromRow = 0;
                 toRow = 0;
-                
+
                 fromRowRook = 0;
-                toRowRook = 0; 
-                
+                toRowRook = 0;
+
                 fromColRook = Utils.columnPosition('a');
                 toColRook = Utils.columnPosition('d');
-                                
+
                 fromAlphaCharacter = 'f';
                 toAlphaCharacter = 'c';
-                                
+
                 fromColumn = Utils.columnPosition(fromAlphaCharacter);
                 toColumn = Utils.columnPosition(toAlphaCharacter);
-            	
+
             } else if(((isQueenSideCastling == true) && (Board.currentPlayer == PlayerType.WHITE)) ){
-            	
+
             	fromRow = 9;
                 toRow = 9;
-                
+
                 fromRowRook = 9;
-                toRowRook = 9; 
-                
+                toRowRook = 9;
+
                 fromColRook = Utils.columnPosition('a');
                 toColRook = Utils.columnPosition('d');
-                                
+
                 fromAlphaCharacter = 'f';
                 toAlphaCharacter = 'c';
-                                
+
                 fromColumn = Utils.columnPosition(fromAlphaCharacter);
                 toColumn = Utils.columnPosition(toAlphaCharacter);
-            	
-            } else{ // normal move
-            	
-            	 fromRow = Utils.reverseConV(Integer.parseInt(String.valueOf( (positions[0].charAt(1) ) ) ) );
-                 toRow = Utils.reverseConV(Integer.parseInt(String.valueOf((positions[1].charAt(1) ) ) ) );
-                 
+
+            } else { // normal move
+
+                try {
+                    fromRow = Utils.reverseConV(Integer.parseInt(positions[0].substring(1)) );
+                } catch (Exception e) {
+                    int equalsPosition = positions[0].indexOf('=') + 1;
+                    fromRow = Utils.reverseConV(Integer.parseInt(positions[0].substring(1, equalsPosition)));
+                }
+
+                try {
+                    toRow = Utils.reverseConV(Integer.parseInt(positions[1].substring(1)) );
+                } catch (Exception e) {
+                    int equalsPosition = positions[1].indexOf('=') + 1;
+                    toRow = Utils.reverseConV(Integer.parseInt(positions[1].substring(1, equalsPosition)));
+                }
 
                  //first move's start column (alphabet)
                  fromAlphaCharacter = positions[0].charAt(0);
@@ -149,11 +159,10 @@ public class ScannerInput {
             }
 
 
-            Move m;
+            Move m = null;
 
             // IF Move is a Promotion/Capture/Normal Move
             if(line.lastIndexOf('=') > 0) {
-            
 
                 PieceType pt = null;
                 switch (line.split("=")[1].toUpperCase()) {
@@ -169,32 +178,34 @@ public class ScannerInput {
                     case "W": pt = PieceType.PRINCESS;
                     case "D": pt = PieceType.DRUNKED_PAWN;
                     case ".": pt = PieceType.SPACE;
-                    
+
                 }
                 m = new Move(new Position(fromColumn, fromRow), new Position(toColumn, toRow), pt, true);
             } else if (line.lastIndexOf('x') > 0) {
 //            	System.out.print("Reach E");
-            	
+
                 int checkIndex = line.lastIndexOf("+");
-                
+
                 boolean isCheck = false;
                 boolean isCheckMate = false;
 
                 if (checkIndex == 5) {
-                	
+
                     isCheck = true;
                 } else if (checkIndex == 6) {
-               
+
                     isCheck = true;
                     isCheckMate = true;
                 }
                 m = new Move(new Position(fromColumn, fromRow), new Position(toColumn, toRow), true, isCheck, isCheckMate);
             } else if(isKingSideCastling || isQueenSideCastling) {
-            	
+
                     if(isQueenSideCastling){ // IS Queen side
-                        m = new Move(new Position(fromColumn, fromRow), new Position(toColumn, toRow), new Position(fromColRook, fromRowRook), new Position(toColRook, toRowRook), true, true, false);
+                        moves.add(new Move(new Position(fromColumn, fromRow), new Position(toColumn, toRow), false, true, false, true));
+                        moves.add(new Move(new Position(fromColRook, fromRowRook), new Position(toColRook, toRowRook), false, true, false, true));
                     } else { // IS King side
-                        m = new Move(new Position(fromColumn, fromRow), new Position(toColumn, toRow), new Position(fromColRook, fromRowRook), new Position(toColRook, toRowRook), true, false, true);
+                        moves.add(new Move(new Position(fromColumn, fromRow), new Position(toColumn, toRow), false, true, false, true));
+                        moves.add(new Move(new Position(fromColRook, fromRowRook), new Position(toColRook, toRowRook), false, true, false, true));
                     }
                 } else {
                         int checkIndex = line.lastIndexOf("+");
@@ -209,11 +220,13 @@ public class ScannerInput {
                             isCheck = true;
                             isCheckMate = true;
                         }
-
                         m = new Move(new Position(fromColumn, fromRow), new Position(toColumn, toRow), isCheck, isCheckMate);
                     }
 
-                    moves.add(m);
+                    if(!(isKingSideCastling || isQueenSideCastling)) {
+                        moves.add(m);
+                    }
+
                 }
 
                 return moves;
@@ -228,22 +241,22 @@ public class ScannerInput {
         String status = scanner.next();
 
         Map<PieceType, Integer> pc = new HashMap<>();
-        
+
         int indexD = 0;
         int indexA = 0;
         for(String row: pieceCount.trim().split("\n")){
-        	
+
         	char w = row.split(":")[1].charAt(0);
             char p = row.split(":")[0].charAt(0);
-            
+
             //char val then number allocated for end board
             charsUsed[indexA]= p;
-            
+
             //num values
             numbersPieces[indexD] = w;
-            
+
             Integer n = Integer.parseInt(row.split(":")[1]);
-        	
+
             switch (p) {
                 case 'k': pc.put(PieceType.KING, n);
                 case 'q': pc.put(PieceType.QUEEN, n);
@@ -260,7 +273,7 @@ public class ScannerInput {
             indexA++;
             indexD++;
         }
-        
+
 
         List<List<Piece>> boardAsPieces = new ArrayList<>();
 
@@ -289,8 +302,14 @@ public class ScannerInput {
                     case 'e' : row.add(new Elephant(PlayerType.BLACK)); break;
                     case 'N' : row.add(new Knight(PlayerType.WHITE)); break;
                     case 'n' : row.add(new Knight(PlayerType.BLACK)); break;
-                    case 'P' : row.add(new Pawn(PlayerType.WHITE)); break;
-                    case 'p' : row.add(new Pawn(PlayerType.BLACK)); break;
+                    case 'P' : {
+                        boolean isAtStartingPosition = boardAsPieces.size() == 9;
+                        row.add(new Pawn(PlayerType.WHITE, isAtStartingPosition)); break;
+                    }
+                    case 'p' : {
+                        boolean isAtStartingPosition = boardAsPieces.size() == 2;
+                        row.add(new Pawn(PlayerType.BLACK, isAtStartingPosition)); break;
+                    }
                     case 'W' : row.add(new Princess(PlayerType.WHITE)); break;
                     case 'w' : row.add(new Princess(PlayerType.BLACK)); break;
                     case 'R' : row.add(new Rook(PlayerType.WHITE)); break;

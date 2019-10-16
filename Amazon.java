@@ -4,12 +4,10 @@
 
 public class Amazon extends Knight {
 
-    PlayerType owner;
-    PieceType type = PieceType.AMAZON;
-
     public Amazon(PlayerType o) {
         super(o);
         this.owner = o;
+        type = PieceType.AMAZON;
     }
 
     @Override
@@ -21,10 +19,5 @@ public class Amazon extends Knight {
         } else { // We know this will be a vertical or horizontal
             return Utils.isValidLongitudinalMove(move, board, owner);
         }
-    }
-
-    @Override
-    public PlayerType getOwner() {
-        return this.owner;
     }
 }

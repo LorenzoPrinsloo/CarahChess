@@ -4,15 +4,14 @@
 
 public class DrunkenPawn extends Pawn {
 
-    PieceType type = PieceType.DRUNKED_PAWN;
-
     public DrunkenPawn(PlayerType o) {
         super(o);
+        type = PieceType.DRUNKED_PAWN;
     }
 
     @Override
     public boolean isValidMove(Move move, Board board) {
-    	
+
         int rowDiff = move.getTo().getRow() - move.getFrom().getRow();
         int colDiff = move.getTo().getColumn() - move.getFrom().getColumn();
 
@@ -27,14 +26,14 @@ public class DrunkenPawn extends Pawn {
                 } else return false;
 
             } else{
-            	
+
             	return false;}
-            
+
         } else if(rowDiff > 0 && owner == PlayerType.BLACK) {
             if(rowDiff == 1){ // move downwards
                 Piece dest = board.getBoardMatrix().get(move.getTo().getRow()).get(move.getTo().getColumn());
-                
-                
+
+
                 if(Math.abs(colDiff) == 1 && dest.getOwner() != owner){
                     return true;
                 } else if(colDiff == 0 && Utils.isSpace(dest)) {
@@ -56,9 +55,5 @@ public class DrunkenPawn extends Pawn {
     @Override
     public Piece makeOfficer(PieceType requested, Board board) {
         return super.makeOfficer(requested, board);
-    }
-    @Override
-    public PieceType getType() {
-        return this.type;
     }
 }

@@ -24,7 +24,7 @@ public class Board {
     private static boolean isValidCheck = true;
     private static boolean isValidCheckMate = true;
     private static boolean isValidCastling = true;
-    
+
     public Board(Board cp) {
         this.currentPlayer = cp.getCurrentPlayer();
         this.blackStatus = new CostlingStatus(cp.getBlackStatus().hasKingCostling, cp.getBlackStatus().hasQueenCostling);
@@ -44,38 +44,28 @@ public class Board {
         this.moveCounter = moveCounter;
         pieceCount = pc;
     }
-    
+
 
     public void move(Move move, int line) throws Exception {
-    	
-    Piece KingPiece = null;
-    Piece RookPiece = null;
+
     Piece piece = null;
-    boolean normal = false;
 
-if( (ScannerInput.isKingSideCastling == false) && (ScannerInput.isQueenSideCastling == false) ){
-       if(move.from != null && move.to != null){ 	   
 
-    	   piece = Utils.getPiece(move.from.getRow(),move.from.getColumn(), boardMatrix);
-    	   normal = true;
+    if(move.from != null && move.to != null){
 
-       }
-}
-else{
-	KingPiece = Utils.getPiece(move.Kingfrom.getRow(), move.Kingfrom.getColumn(), boardMatrix);
-	RookPiece = Utils.getPiece(move.Rookfrom.getRow(), move.Rookfrom.getColumn(), boardMatrix);
-}
+       piece = Utils.getPiece(move.from.getRow(),move.from.getColumn(), boardMatrix);
 
-if(normal == true){
-        if( (piece.isValidMove(move, this)) ) { //if valid move apply move and switch player
-        	badmove++;
+    }
+
+//if(normal == true) {
+    if( (piece.isValidMove(move, this)) ) { //if valid move apply move and switch player
 
             if(move.isCapture){
                 isAllocatedCapture(move, line, piece);
                 captureRuleSet(move, line, piece);
 
             } else if(move.isNormal) {
-                isAllocatedMove(move, line, piece);
+//                isAllocatedMove(move, line, piece);
                 moveRuleSet(move, line, piece);
 
             } else if(move.isPromotion) {
@@ -96,7 +86,7 @@ if(normal == true){
                 if(!Utils.isSamePosition(kingPos, move.to)){
                     isValidCheck = false;
 //                 System.out.println("Valid Check a");
-                    MoveValidationErrors.illegalCheck(badmove);
+                    MoveValidationErrors.illegalCheck(line+badmove);
 
                 }
             } else if(move.isCheckMate){
@@ -106,28 +96,24 @@ if(normal == true){
                 if(!oponentKing.isInCheckMate(kingPos, this)){
                     isValidCheckMate = false;
 //                    System.out.println("Valid Check b");
-                    MoveValidationErrors.illegalCheckmate(badmove);
+                    MoveValidationErrors.illegalCheckmate(line+badmove);
 
                 }
-            } 
-            
-            else if(move.isCastling) {
-            	
-
+            } else if(move.isCastling) {
                 if(move.isQueenSide) {
                     if(currentPlayer == PlayerType.WHITE){
                     	//switch
                         if(!blackStatus.hasQueenCostling){
                             isValidCastling = false;
 //                            System.out.println("Valid Cast a");
-                            MoveValidationErrors.illegalCastlingMove(badmove);
+                            MoveValidationErrors.illegalCastlingMove(line+badmove);
 
                         }
                     } else { // White
                         if(!whiteStatus.hasQueenCostling){
                             isValidCastling = false;
 //                            System.out.println("Valid Cast b");
-                            MoveValidationErrors.illegalCastlingMove(badmove);
+                            MoveValidationErrors.illegalCastlingMove(line+badmove);
 
                         }
                     }
@@ -137,28 +123,28 @@ if(normal == true){
                         if(!blackStatus.hasKingCostling){
                             isValidCastling = false;
 //                            System.out.println("Valid Cast c");
-                            MoveValidationErrors.illegalCastlingMove(badmove);
+                            MoveValidationErrors.illegalCastlingMove(line+badmove);
 
                         }
                     } else { // White
                         if(!whiteStatus.hasKingCostling){
                             isValidCastling = false;
 //                            System.out.println("Valid Cast d");
-                            MoveValidationErrors.illegalCastlingMove(badmove);
+                            MoveValidationErrors.illegalCastlingMove(line+badmove);
 
                         }
                     }
                 }
-                
+
                 boolean valid = castlingRuleSet(move , line , piece);
-                
-                if(valid == false){
+
+                if(!valid){
                 	isValidCastling = false;
 //                	System.out.println("Castling h");
-                	MoveValidationErrors.illegalCastlingMove(badmove);
+                	MoveValidationErrors.illegalCastlingMove(line+badmove);
                 }
-                
-                
+
+
 
             }
 
@@ -192,99 +178,95 @@ if(normal == true){
             }
 
 
-        } 
-}
-        
-        else if( (KingPiece.isValidMove(move, this)) && (RookPiece.isValidMove(move, this))){ //is Castling move
-            
-         if(move.isCastling) {
-            	
-
-                if(move.isQueenSide) {
-                    if(currentPlayer == PlayerType.WHITE){
-                    	//switch
-                        if(!whiteStatus.hasQueenCostling){
-                            isValidCastling = false;
-//                            System.out.println("Valid Cast a");
-                            MoveValidationErrors.illegalCastlingMove(badmove);
-
-                        }
-                    } else { // Black
-                        if(!blackStatus.hasQueenCostling){
-                            isValidCastling = false;
-//                            System.out.println("Valid Cast b");
-                            MoveValidationErrors.illegalCastlingMove(badmove);
-
-                        }
-                    }
-                } else { // King Side
-                    if(currentPlayer == PlayerType.WHITE){
-                    	//switch
-                        if(!whiteStatus.hasKingCostling){
-                            isValidCastling = false;
-//                            System.out.println("Valid Cast c");
-                            MoveValidationErrors.illegalCastlingMove(badmove);
-
-                        }
-                    } else { // Black
-                        if(!blackStatus.hasKingCostling){
-                            isValidCastling = false;
-//                            System.out.println("Valid Cast d");
-                            MoveValidationErrors.illegalCastlingMove(badmove);
-
-                        }
-                    }
-                }
-                
-                boolean valid = castlingRuleSet(move , line , piece);
-                
-                if(valid == false){
-                	isValidCastling = false;
-//                	System.out.println("Castling x");
-                	MoveValidationErrors.illegalCastlingMove(badmove);
-                }
-                
-                
-
-            }
-
-
-            if(isValidPromotion && isValidCheckMate && isValidCheck && isValidMove && isValidCapture && isValidCastling) {
-
-            	PieceType KingToPiece = Utils.getPiece(move.Kingto.getRow(), move.Kingto.getColumn(), boardMatrix).getType();
-            	PieceType KingFromPiece = Utils.getPiece(move.Kingfrom.getRow(), move.Kingfrom.getColumn(), boardMatrix).getType();
-            	PieceType RookToPiece = Utils.getPiece(move.Rookto.getRow(), move.Rookto.getColumn(), boardMatrix).getType();
-                PieceType RookfromPiece = Utils.getPiece(move.Rookfrom.getRow(), move.Rookfrom.getColumn(), boardMatrix).getType();
-
-                if(move.isCastling){ // CASTLING
-                    moveCastling(move);
-                }
-                
-                    this.halfMoveClock++;
-                    
-                if( (move.isCapture) ){
-                	this.halfMoveClock = 0;
-                }
-
-                if(currentPlayer.equals(PlayerType.BLACK)){ // Valid Black move then increment counter
-                    moveCounter++;
-                }
-
-                this.currentPlayer = Utils.nextPlayer(currentPlayer);
-                
-            }
         }
-        
+//}
+
+//        else if( (KingPiece.isValidMove(move, this)) && (RookPiece.isValidMove(move, this))){ //is Castling move
+//
+//         if(move.isCastling) {
+//
+//
+//                if(move.isQueenSide) {
+//                    if(currentPlayer == PlayerType.WHITE){
+//                    	//switch
+//                        if(!whiteStatus.hasQueenCostling){
+//                            isValidCastling = false;
+////                            System.out.println("Valid Cast a");
+//                            MoveValidationErrors.illegalCastlingMove(badmove);
+//
+//                        }
+//                    } else { // Black
+//                        if(!blackStatus.hasQueenCostling){
+//                            isValidCastling = false;
+////                            System.out.println("Valid Cast b");
+//                            MoveValidationErrors.illegalCastlingMove(badmove);
+//
+//                        }
+//                    }
+//                } else { // King Side
+//                    if(currentPlayer == PlayerType.WHITE){
+//                    	//switch
+//                        if(!whiteStatus.hasKingCostling){
+//                            isValidCastling = false;
+////                            System.out.println("Valid Cast c");
+//                            MoveValidationErrors.illegalCastlingMove(badmove);
+//
+//                        }
+//                    } else { // Black
+//                        if(!blackStatus.hasKingCostling){
+//                            isValidCastling = false;
+////                            System.out.println("Valid Cast d");
+//                            MoveValidationErrors.illegalCastlingMove(badmove);
+//
+//                        }
+//                    }
+//                }
+//
+//                boolean valid = castlingRuleSet(move , line , piece);
+//
+//                if(valid == false){
+//                	isValidCastling = false;
+////                	System.out.println("Castling x");
+//                	MoveValidationErrors.illegalCastlingMove(badmove);
+//                }
+//
+//
+//
+//            }
+//
+//
+//            if(isValidPromotion && isValidCheckMate && isValidCheck && isValidMove && isValidCapture && isValidCastling) {
+//
+//            	PieceType KingToPiece = Utils.getPiece(move.Kingto.getRow(), move.Kingto.getColumn(), boardMatrix).getType();
+//            	PieceType KingFromPiece = Utils.getPiece(move.Kingfrom.getRow(), move.Kingfrom.getColumn(), boardMatrix).getType();
+//            	PieceType RookToPiece = Utils.getPiece(move.Rookto.getRow(), move.Rookto.getColumn(), boardMatrix).getType();
+//                PieceType RookfromPiece = Utils.getPiece(move.Rookfrom.getRow(), move.Rookfrom.getColumn(), boardMatrix).getType();
+//
+//                if(move.isCastling){ // CASTLING
+//                    moveCastling(move);
+//                }
+//
+//                    this.halfMoveClock++;
+//
+//                if( (move.isCapture) ){
+//                	this.halfMoveClock = 0;
+//                }
+//
+//                if(currentPlayer.equals(PlayerType.BLACK)){ // Valid Black move then increment counter
+//                    moveCounter++;
+//                }
+//
+//                this.currentPlayer = Utils.nextPlayer(currentPlayer);
+//
+//            }
+//        }
+
         // else stay on same player and throw exception
         else {
-        	
         	if(move.isCapture){
-//        		System.out.println("Capture z ");
-        		MoveValidationErrors.illegalCapture(badmove);
+        		MoveValidationErrors.illegalCapture(line+badmove);
         	}
-        	
-//        	System.out.println("Move f");
-            MoveValidationErrors.illegalMove(badmove);
+            MoveValidationErrors.illegalMove(line+badmove);
 
         }
 
@@ -298,48 +280,48 @@ public boolean castlingRuleSet(Move move, int line, Piece piece){
     	//halfmoveClock
         if(halfMoveClock >=50){
 //        	System.out.println("Castling l");
-        	MoveValidationErrors.illegalCastlingMove(badmove);
+        	MoveValidationErrors.illegalCastlingMove(line+badmove);
         	valid = false;
         }
 
         //pieces in way
         if( (currentPlayer.equals(PlayerType.WHITE)) ){
-        	
+
         if(ScannerInput.isQueenSideCastling){
-        	
-        
+
+
         //LEFTSIDE QUEEN; WHITE
         for(int i = 5; i > 1; i--){
         	if( (Utils.getPiece(9, i, boardMatrix).owner != PlayerType.NOT_SET) ){
         		valid = false;
 //        		System.out.println("Castling m");
-        		MoveValidationErrors.illegalCastlingMove(line);
+        		MoveValidationErrors.illegalCastlingMove(line+badmove);
         	}
           }
         }
         else if(ScannerInput.isKingSideCastling){
-        	
+
         //RIGHTSIDE KING; WHITE
         for(int i = 6; i < 9; i++){
         	if( (Utils.getPiece(9, i, boardMatrix).owner != PlayerType.NOT_SET) ){
         		valid = false;
 //        		System.out.println("Castling p");
-        		MoveValidationErrors.illegalCastlingMove(line);
+        		MoveValidationErrors.illegalCastlingMove(line+badmove);
         	}
           }
         }
-        
+
       }
-        
+
         else{// player: black
-        	
+
         	if(ScannerInput.isQueenSideCastling){
         	//LEFTSIDE QUEEN; BLACK
         	for(int i = 5; i > 1; i--){
         		if( (Utils.getPiece(0, i, boardMatrix).owner != PlayerType.NOT_SET) ){
 //                System.out.println("Castling r ");
             	valid = false;
-        		MoveValidationErrors.illegalCastlingMove(line);
+        		MoveValidationErrors.illegalCastlingMove(line+badmove);
         		}
         	}
         	}
@@ -349,12 +331,12 @@ public boolean castlingRuleSet(Move move, int line, Piece piece){
         		if( (Utils.getPiece(0, i, boardMatrix).owner != PlayerType.NOT_SET) ){
 //        		System.out.println("Castling b ");
         		valid = false;
-        		MoveValidationErrors.illegalCastlingMove(line);
+        		MoveValidationErrors.illegalCastlingMove(line+badmove);
         		}
         	}
         }
-    }    
-        
+    }
+
         return valid;
 }
 
@@ -371,7 +353,7 @@ public boolean castlingRuleSet(Move move, int line, Piece piece){
         	//if not pawn piece
             isValidPromotion = false;
 //            System.out.println("Valid Promotion a");
-            MoveValidationErrors.illegalPromotion(badmove);
+            MoveValidationErrors.illegalPromotion(line+badmove);
 
 
         } else {
@@ -386,7 +368,7 @@ public boolean castlingRuleSet(Move move, int line, Piece piece){
                 	//not reached section
                     isValidPromotion = false;
 //                    System.out.println("Valid Promotion c");
-                    MoveValidationErrors.illegalPromotion(badmove);
+                    MoveValidationErrors.illegalPromotion(line+badmove);
                 }
             } else { // Is BLACK
                 if(move.to.getRow() == 9) {
@@ -398,7 +380,7 @@ public boolean castlingRuleSet(Move move, int line, Piece piece){
                 	//not reached section
                     isValidPromotion = false;
 //                    System.out.println("Valid Promotion z");
-                    MoveValidationErrors.illegalPromotion(badmove);
+                    MoveValidationErrors.illegalPromotion(line+badmove);
                 }
             }
          //CHANGED : LOOK
@@ -419,14 +401,14 @@ public boolean castlingRuleSet(Move move, int line, Piece piece){
             else {
                 isValidPromotion = false;
 //                System.out.println("Valid Promotion d");
-                MoveValidationErrors.illegalPromotion(badmove);
+                MoveValidationErrors.illegalPromotion(line+badmove);
             }
 
             //3.
             if(ScannerInput.promotionP.equals(PieceType.ELEPHANT)) {
                 isValidPromotion = false;
 //                System.out.println("Valid Promotion e");
-                MoveValidationErrors.illegalPromotion(badmove);
+                MoveValidationErrors.illegalPromotion(line+badmove);
             }
 
             King k = getCurrentKing();
@@ -442,12 +424,12 @@ public boolean castlingRuleSet(Move move, int line, Piece piece){
                 if(k.isInCheck(Utils.findPositionOnBoard(k, simBoard.getBoardMatrix()), simBoard)) {
                     isValidPromotion = false;
 //                    System.out.println("Valid Promotion f");
-                    MoveValidationErrors.illegalPromotion(badmove);
+                    MoveValidationErrors.illegalPromotion(line+badmove);
                 }
             } else if(k.isInCheckMate(kingPos, this)){
                 isValidPromotion = false;
 //                System.out.println("Valid Promotion g");
-                MoveValidationErrors.illegalPromotion(badmove);
+                MoveValidationErrors.illegalPromotion(line+badmove);
             }
         }
     }
@@ -457,7 +439,7 @@ public boolean castlingRuleSet(Move move, int line, Piece piece){
 
         // Invalid if move piece doesn't exist in position specified
     	Position piecePos = move.from;
-        
+
 
         if(pieceExistsAt(piece, piecePos)){
         	//piece at start
@@ -465,7 +447,7 @@ public boolean castlingRuleSet(Move move, int line, Piece piece){
         } else {
             isValidMove = false;
 //            System.out.println("Move a");
-            MoveValidationErrors.illegalMove(badmove);
+            MoveValidationErrors.illegalMove(line+badmove);
         }
 
 
@@ -482,8 +464,7 @@ public boolean castlingRuleSet(Move move, int line, Piece piece){
 
             if(k.isInCheck(Utils.findPositionOnBoard(k, simBoard.getBoardMatrix()), simBoard)) {
                 isValidMove = false;
-//                System.out.println("Move b");
-                MoveValidationErrors.illegalMove(badmove);
+                MoveValidationErrors.illegalMove(line+badmove);
 
             }
         }
@@ -491,7 +472,7 @@ public boolean castlingRuleSet(Move move, int line, Piece piece){
         if(halfMoveClock == 50 && !(piece instanceof Pawn)) {
             isValidMove = false;
 //            System.out.println("Move d ");
-            MoveValidationErrors.illegalMove(badmove);
+            MoveValidationErrors.illegalMove(line+badmove);
 
         }
     }
@@ -509,7 +490,7 @@ public boolean castlingRuleSet(Move move, int line, Piece piece){
 
             isValidCapture = false;
 //            System.out.println("Capture W");
-            MoveValidationErrors.illegalCapture(badmove);
+            MoveValidationErrors.illegalCapture(line+badmove);
         }
 
         King k = getCurrentKing();
@@ -527,12 +508,12 @@ public boolean castlingRuleSet(Move move, int line, Piece piece){
                 isValidCapture = false;
 
 //                System.out.println("Capture L");
-                MoveValidationErrors.illegalCapture(badmove);
+                MoveValidationErrors.illegalCapture(line+badmove);
             }
         } else if(k.isInCheckMate(kingPos, this)){
             isValidCapture = false;
 //            System.out.println("Capture J");
-            MoveValidationErrors.illegalCapture(badmove);
+            MoveValidationErrors.illegalCapture(line+badmove);
         }
     }
 
@@ -568,7 +549,7 @@ public boolean castlingRuleSet(Move move, int line, Piece piece){
             isValidCapture = false;
 
 //            System.out.println("Capture M");
-            MoveValidationErrors.illegalCapture(badmove);
+            MoveValidationErrors.illegalCapture(line+badmove);
         }
     }
 
@@ -582,8 +563,7 @@ public boolean castlingRuleSet(Move move, int line, Piece piece){
 
         if( (pieceAtDestination.getOwner()) == (Utils.nextPlayer(currentPlayer)) ){
         	isValidMove = false; //should have been marked capture
-//            System.out.println("Move e");
-        	MoveValidationErrors.illegalMove(badmove);
+        	MoveValidationErrors.illegalMove(line+badmove);
         }
         else{
         	isValidMove = true;
@@ -599,10 +579,7 @@ public boolean castlingRuleSet(Move move, int line, Piece piece){
         if(oponentKing.isInCheck(kingPos,simBoard) && !move.isCheck){
 
         	isValidMove = false;
-
-//        	System.out.println("Move u ");
-
-        	MoveValidationErrors.illegalMove(badmove);
+        	MoveValidationErrors.illegalMove(line+badmove);
         }
 
         }
@@ -620,7 +597,7 @@ public boolean castlingRuleSet(Move move, int line, Piece piece){
 
         if((oponentKing.isInCheck(kingPos, simBoard) && !move.isCheck) || (oponentKing.isInCheckMate(kingPos, simBoard)  && !move.isCheckMate)) {
             isValidMove = false;
-            MoveValidationErrors.illegalPromotion(badmove);
+            MoveValidationErrors.illegalPromotion(line+badmove);
         }
     }
 
@@ -641,8 +618,8 @@ public boolean castlingRuleSet(Move move, int line, Piece piece){
                 whiteStatus.hasKingCostling = false;
                 whiteStatus.hasQueenCostling = false;
                 move.setTo(new Position(8, 9));
-            }        
-            
+            }
+
         } else { // BLACK
             move.setFrom(kingFrom);
 

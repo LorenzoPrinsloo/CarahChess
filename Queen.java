@@ -3,13 +3,11 @@
 //import root.*;
 
 
-public class Queen implements Piece {
-
-    PlayerType owner;
-    PieceType type = PieceType.QUEEN;
+public class Queen extends Piece {
 
     public Queen(PlayerType o) {
         this.owner = o;
+        type = PieceType.QUEEN;
     }
 
     @Override

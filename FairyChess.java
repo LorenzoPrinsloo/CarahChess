@@ -14,16 +14,14 @@ public class FairyChess {
 
         try {
 
-            Scanner boardScanner = new Scanner(new File(args[0]));
-            Scanner moveScanner = new Scanner(new File(args[1]));
+            Scanner boardScanner = new Scanner(new File("/Users/cmlprinsloogmail.com/Documents/Java/21807744-project-master/resource/king_valid_2.board"));
+            Scanner moveScanner = new Scanner(new File("/Users/cmlprinsloogmail.com/Documents/Java/21807744-project-master/resource/king_valid_2.moves"));
 
             Board board = ScannerInput.readBoard(boardScanner);
             List<Move> moves = ScannerInput.readMoves(moveScanner);
-            
-            
+
             int line = 0;
             for(Move move: moves){
-
                 board.move(move, line);
                 line++;
             }
@@ -32,8 +30,8 @@ public class FairyChess {
             System.out.println(e);
             e.printStackTrace();
         }
-        
-        
+
+
         Board.printBoard();
     }
 }

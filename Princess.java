@@ -4,12 +4,10 @@
 
 public class Princess extends Knight {
 
-    PlayerType owner;
-    PieceType type = PieceType.PRINCESS;
-
     public Princess(PlayerType o) {
         super(o);
         this.owner = o;
+        type = PieceType.PRINCESS;
     }
 
     @Override
@@ -19,10 +17,5 @@ public class Princess extends Knight {
         } else if(Utils.isDiagonalMove(move)){
             return Utils.isValidDiagonalMove(move, board, owner);
         } else return false;
-    }
-
-    @Override
-    public PlayerType getOwner() {
-        return this.owner;
     }
 }

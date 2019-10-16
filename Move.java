@@ -4,10 +4,6 @@ public class Move {
 
     Position from;
     Position to;
-    Position Kingfrom;
-    Position Kingto;
-    Position Rookfrom;
-    Position Rookto;
     PieceType promotionPiece;
     boolean isPromotion;
     boolean isCapture;
@@ -61,28 +57,21 @@ public class Move {
         this.isCastling = false;
     }
 
-    public Move(Position Kingfrom, Position Kingto, Position Rookfrom, Position Rookto, boolean isCastling, boolean isQueenSide, boolean isKingSide){ // Castling Move
+    public Move(Position from, Position to, boolean isCapture, boolean isCastling, boolean isQueenSide, boolean isKingSide){ // Castling Move
+        this.from = from;
+        this.to = to;
     	this.isCastling = isCastling;
-        this.isCapture = false;
+        this.isCapture = isCapture;
         this.isPromotion = false;
         this.isNormal = false;
         this.isCheck = false;
         this.isCheckMate = false;
         this.isQueenSide = isQueenSide;
         this.isKingSide = isKingSide;
-        
-        this.Kingfrom = Kingfrom;
-        this.Kingto = Kingto; 
-        this.Rookfrom = Rookfrom; 
-        this.Rookto = Rookto;
     }
 
     public Position getFrom() {
         return this.from;
-    }
-    
-    public Position KinggetFrom(){
-    	return this.Kingfrom;
     }
 
     public void setFrom(Position from) {
@@ -91,10 +80,6 @@ public class Move {
 
     public Position getTo() {
         return this.to;
-    }
-    
-    public Position KinggetTo(){
-    	return this.Kingto;
     }
 
     public void setTo(Position to) {
@@ -107,5 +92,22 @@ public class Move {
 
     public void setCapture(boolean capture) {
         isCapture = capture;
+    }
+
+    @Override
+    public String toString() {
+        return "Move{" +
+                "from=" + from +
+                ", to=" + to +
+                ", promotionPiece=" + promotionPiece +
+                ", isPromotion=" + isPromotion +
+                ", isCapture=" + isCapture +
+                ", isNormal=" + isNormal +
+                ", isCheckMate=" + isCheckMate +
+                ", isCheck=" + isCheck +
+                ", isCastling=" + isCastling +
+                ", isQueenSide=" + isQueenSide +
+                ", isKingSide=" + isKingSide +
+                "}\n";
     }
 }

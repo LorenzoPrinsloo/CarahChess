@@ -1,13 +1,11 @@
 //package root.pieces;
 //import root.*;
 
-public class Knight implements Piece {
-
-    PlayerType owner;
-    PieceType type = PieceType.KNIGHT;
+public class Knight extends Piece {
 
     public Knight(PlayerType o) {
         this.owner = o;
+        type = PieceType.KNIGHT;
     }
 
     @Override
@@ -23,21 +21,11 @@ public class Knight implements Piece {
         } else  return false;
     }
 
-    @Override
-    public PlayerType getOwner() {
-        return this.owner;
-    }
-
-    @Override
-    public PieceType getType() {
-        return this.type;
-    }
-
     /**
      * Calculate the step needed to navigate through matrix in a specific direction
-     * @return 
+     * @return
      */
-   
+
 
     public boolean isLShapedMove(Move move) {
         Integer rowStep = Math.abs(move.getTo().getRow() - move.getFrom().getRow());
@@ -46,6 +34,6 @@ public class Knight implements Piece {
         if( (rowStep == 2 && colStep == 1 ) || (colStep == 2 && rowStep == 1)){
             return true;
         } else return false;
-    	
+
     }
 }

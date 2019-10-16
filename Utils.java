@@ -13,7 +13,7 @@ public class Utils {
     	//!!!! REMEMBER TO ADD 1
     	String alphabet = "abcdefghij";
     	int numberVal = 0;
-    	
+
     	if(inputChar == alphabet.charAt(0)){
     		return numberVal;
     	}
@@ -42,7 +42,7 @@ public class Utils {
     		numberVal = 8;
     	}
     	else if(inputChar == alphabet.charAt(9)){
-    		numberVal = 9; 
+    		numberVal = 9;
     	}
         return numberVal;
     }
@@ -70,14 +70,14 @@ public class Utils {
     /**
      * Calculate the step needed to navigate through matrix in a specific direction
      */
-    
-    
+
+
     public static Integer fstCalc(Move move) {
         Integer fst_row = toStep(move.getTo().getRow() - move.getFrom().getRow());
 
         return fst_row;
     }
-    
+
     public static Integer sndCalc(Move move){
     	Integer snd_col = toStep(move.getTo().getColumn() - move.getFrom().getColumn());
     	return snd_col;
@@ -104,7 +104,7 @@ public class Utils {
     }
 
     public static boolean isLongitudinalMove(Move move){
-        
+
     	Integer rowDif = move.getFrom().getRow() - move.getTo().getRow();
         Integer colDif = move.getFrom().getColumn() - move.getTo().getColumn();
 
@@ -112,7 +112,7 @@ public class Utils {
             return true;
         } else return false;
     }
-    
+
 
     public static boolean isValidLongitudinalMove(Move move, Board board, PlayerType owner) {
         // fst is rowStep and snd is colStep
@@ -120,12 +120,12 @@ public class Utils {
 
         int rowCurrent = move.getFrom().getRow() + fstCalc(move); // this is done so first block checked isn't the piece itself
         int colCurrent = move.getFrom().getColumn() + sndCalc(move);
-        
+
         int rowDest = move.getTo().getRow();
         int colDest = move.getTo().getColumn();
-        
+
         while((rowCurrent <= 9) && (colCurrent <=9) && (rowCurrent >=0) && (colCurrent>=0)){
-        	
+
             if((isSpace(boardMatrix.get(rowCurrent).get(colCurrent)) || boardMatrix.get(rowCurrent).get(colCurrent).getOwner() != owner) && rowCurrent == rowDest && colCurrent == colDest) {
                 return true;
             } else if(!isSpace(boardMatrix.get(rowCurrent).get(colCurrent))) {
@@ -135,8 +135,8 @@ public class Utils {
             rowCurrent = rowCurrent + fstCalc(move);
             colCurrent = colCurrent + sndCalc(move);
         }
-           
-        return true;
+
+        return false; // if after boundary of board then it's not a valid move
     }
 
     public static boolean isValidDiagonalMove(Move move, Board board, PlayerType owner) {
@@ -161,7 +161,7 @@ public class Utils {
             colCurrent = colCurrent + sndCalc(move);
         }
 
-        return true;
+        return false; // if after boundary of board then it's not a valid move
     }
 
     public static Position findPositionOnBoard(final Piece piece, List<List<Piece>> matrix) throws Exception {
@@ -211,10 +211,10 @@ public class Utils {
             return false;
         }
     }
-    
+
     public static int reverseConV(int line){
-    //from theirs to mine	
-    
+    //from theirs to mine
+
     	if(line == 10){
           	line = 0;
           }
@@ -250,7 +250,7 @@ public class Utils {
 
     public static int conV(int line){
     //from mine to theirs
-    	
+
       if(line == 0){
       	line = 10;
       }
